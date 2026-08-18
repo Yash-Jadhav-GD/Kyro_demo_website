@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyro Tools Experience</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <main>
+        <section class="tool-section" id="section-search">
+            <div class="content">
+                <div class="subtitle">DISCOVER</div>
+                <h2>Tool Search</h2>
+                <p>Find the exact PowerPoint command you need, instantly. Morphing from a simple search to powerful floating symbols.</p>
+            </div>
+        </section>
+        <section class="tool-section" id="section-vizbank">
+            <div class="content">
+                <div class="subtitle">ASSETS</div>
+                <h2>VizBank</h2>
+                <p>A 3D gallery of layered slide thumbnails that fan out on hover. Access your visual assets in a premium interface.</p>
+            </div>
+        </section>
+        <section class="tool-section" id="section-theme">
+            <div class="content">
+                <div class="subtitle">BRANDING</div>
+                <h2>Theme Palettes</h2>
+                <p>Dynamic colour wheels with illuminated clusters. Maintain perfect brand consistency across every slide.</p>
+            </div>
+        </section>
+        <section class="tool-section" id="section-auto">
+            <div class="content">
+                <div class="subtitle">MAGIC</div>
+                <h2>Auto Color</h2>
+                <p>Watch as monochrome objects flow with a colour wave, applying your active theme automatically.</p>
+            </div>
+        </section>
+    </main>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
