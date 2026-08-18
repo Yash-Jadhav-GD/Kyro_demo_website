@@ -34,89 +34,52 @@ function randomPointInSphere(radius) {
     );
 }
 
-function generateToolSearch() {
-    const pos = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) {
-        let x, y, z;
-        if (i < N * 0.3) {
-            // Magnifying glass ring
-            const angle = Math.random() * Math.PI * 2;
-            const r = 2.0 + (Math.random() - 0.5) * 0.3;
-            x = Math.cos(angle) * r - 1.5;
-            y = Math.sin(angle) * r + 1.5;
-            z = (Math.random() - 0.5) * 0.3;
-        } else if (i < N * 0.45) {
-            // Magnifying glass handle
-            const t = Math.random();
-            const len = 3.5;
-            const angle = Math.PI / 4;
-            x = (t * len) * Math.cos(-angle) - 0.5;
-            y = (t * len) * Math.sin(-angle) + 0.5;
-            z = (Math.random() - 0.5) * 0.3;
-        } else if (i < N * 0.8) {
-            // Floating UI/Command blocks
-            x = (Math.random() - 0.5) * 12;
-            y = (Math.random() - 0.5) * 10;
-            z = (Math.random() - 0.5) * 8 - 2;
-            // Snap to grid for "blocky" look
-            x = Math.round(x / 2.0) * 2.0 + (Math.random()-0.5)*0.8;
-            y = Math.round(y / 1.5) * 1.5 + (Math.random()-0.5)*0.8;
-        } else {
-            // Ambient
-            x = (Math.random() - 0.5) * 25;
-            y = (Math.random() - 0.5) * 20;
-            z = (Math.random() - 0.5) * 15 - 5;
-        }
-        pos[i*3] = x;
-        pos[i*3+1] = y;
-        pos[i*3+2] = z;
-    }
-    return pos;
-}
-
-function generateVizBank() {
+function generateThemeExtractor() {
     const pos = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) {
         let x, y, z;
         if (i < N * 0.2) {
-            // Gallery Frame (4 borders)
+            // Eyedropper bulb
+            const u = Math.random() * Math.PI * 2;
+            const v = Math.random() * Math.PI;
+            const r = 1.0;
+            x = -1.8 + Math.sin(v) * Math.cos(u) * r;
+            y = 1.8 + Math.sin(v) * Math.sin(u) * r;
+            z = Math.cos(v) * r;
+        } else if (i < N * 0.45) {
+            // Eyedropper tube (diagonal cylinder)
             const t = Math.random();
-            const edge = i % 4;
-            if (edge === 0) { x = t*8 - 4; y = 3; } // Top
-            else if (edge === 1) { x = t*8 - 4; y = -3; } // Bottom
-            else if (edge === 2) { x = -4; y = t*6 - 3; } // Left
-            else { x = 4; y = t*6 - 3; } // Right
-            // Add thickness
-            x += (Math.random()-0.5)*0.5;
-            y += (Math.random()-0.5)*0.5;
-            z = (Math.random()-0.5)*0.5;
-        } else if (i < N * 0.35) {
-            // Sun (Solid circle)
-            const r = Math.sqrt(Math.random()) * 1.2;
-            const theta = Math.random() * Math.PI * 2;
-            x = 1.5 + r * Math.cos(theta);
-            y = 1.5 + r * Math.sin(theta);
-            z = (Math.random()-0.5)*0.4;
-        } else if (i < N * 0.55) {
-            // Mountain 1 (Filled triangle)
-            let r1 = Math.random(), r2 = Math.random();
-            if (r1 + r2 > 1) { r1 = 1-r1; r2 = 1-r2; }
-            const ax = -4, ay = -3;
-            const bx = 0.5, by = -3;
-            const cx = -1.5, cy = 1.0;
-            x = ax + r1*(bx-ax) + r2*(cx-ax);
-            y = ay + r1*(by-ay) + r2*(cy-ay);
-            z = (Math.random()-0.5)*0.5;
-        } else if (i < N * 0.75) {
-            // Mountain 2 (Filled triangle)
-            let r1 = Math.random(), r2 = Math.random();
-            if (r1 + r2 > 1) { r1 = 1-r1; r2 = 1-r2; }
-            const ax = -1.5, ay = -3;
-            const bx = 4, by = -3;
-            const cx = 1.5, cy = -0.5;
-            x = ax + r1*(bx-ax) + r2*(cx-ax);
-            y = ay + r1*(by-ay) + r2*(cy-ay);
-            z = (Math.random()-0.5)*0.5 + 0.3; // Bring slightly forward
+            const lx = -1.2 + t * 2.4; // from -1.2 to 1.2
+            const ly = 1.2 - t * 2.4;  // from 1.2 to -1.2
+            const angle = Math.random() * Math.PI * 2;
+            const rad = 0.5;
+            const perpX = 0.707 * rad * Math.cos(angle);
+            const perpY = 0.707 * rad * Math.cos(angle);
+            const perpZ = rad * Math.sin(angle);
+            x = lx + perpX;
+            y = ly + perpY;
+            z = perpZ;
+        } else if (i < N * 0.6) {
+            // Eyedropper tip (cone shape)
+            const t = Math.random();
+            const lx = 1.2 + t * 0.6; // down to 1.8
+            const ly = -1.2 - t * 0.6; // down to -1.8
+            const angle = Math.random() * Math.PI * 2;
+            const rad = 0.5 * (1 - t); // tapers off
+            const perpX = 0.707 * rad * Math.cos(angle);
+            const perpY = 0.707 * rad * Math.cos(angle);
+            const perpZ = rad * Math.sin(angle);
+            x = lx + perpX;
+            y = ly + perpY;
+            z = perpZ;
+        } else if (i < N * 0.7) {
+            // Drop of liquid falling
+            const r = Math.cbrt(Math.random()) * 0.4;
+            const u = Math.random() * Math.PI * 2;
+            const v = Math.acos(2.0 * Math.random() - 1.0);
+            x = 2.4 + r * Math.sin(v) * Math.cos(u);
+            y = -2.4 + r * Math.sin(v) * Math.sin(u);
+            z = r * Math.cos(v);
         } else {
             // Ambient
             x = (Math.random() - 0.5) * 25;
@@ -128,86 +91,154 @@ function generateVizBank() {
     return pos;
 }
 
-function generateThemePalettes() {
+function generateSlideDoctor() {
     const pos = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) {
-        if (i < N * 0.7) {
-            // Color wheel (multiple rings)
-            const ring = i % 3;
-            const angle = Math.random() * Math.PI * 2;
-            const radius = 2.0 + ring * 1.5 + Math.random() * 0.5;
-            
-            // Create clusters
-            const cluster = Math.floor(angle / (Math.PI / 3));
-            const clusterAngle = cluster * (Math.PI / 3) + (Math.random() - 0.5) * 0.5;
-            
-            pos[i*3] = Math.cos(clusterAngle) * radius;
-            pos[i*3+1] = Math.sin(clusterAngle) * radius;
-            pos[i*3+2] = (Math.random() - 0.5) * 1.0;
+        let x, y, z;
+        if (i < N * 0.1) {
+            // Left Earpiece
+            const r = Math.cbrt(Math.random()) * 0.4;
+            const u = Math.random() * Math.PI * 2;
+            const v = Math.acos(2.0 * Math.random() - 1.0);
+            x = -1.5 + r * Math.sin(v) * Math.cos(u);
+            y = 2.5 + r * Math.sin(v) * Math.sin(u);
+            z = r * Math.cos(v);
+        } else if (i < N * 0.2) {
+            // Right Earpiece
+            const r = Math.cbrt(Math.random()) * 0.4;
+            const u = Math.random() * Math.PI * 2;
+            const v = Math.acos(2.0 * Math.random() - 1.0);
+            x = 1.5 + r * Math.sin(v) * Math.cos(u);
+            y = 2.5 + r * Math.sin(v) * Math.sin(u);
+            z = r * Math.cos(v);
+        } else if (i < N * 0.35) {
+            // Left Y-tube
+            const t = Math.random();
+            x = -1.5 + t * 1.5;
+            y = 2.5 - t * 2.0;
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.5) {
+            // Right Y-tube
+            const t = Math.random();
+            x = 1.5 - t * 1.5;
+            y = 2.5 - t * 2.0;
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.65) {
+            // Main vertical tube
+            const t = Math.random();
+            x = 0;
+            y = 0.5 - t * 2.5; // down to -2
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.8) {
+            // Chest piece (Disc)
+            const r = Math.sqrt(Math.random()) * 1.2;
+            const theta = Math.random() * Math.PI * 2;
+            x = r * Math.cos(theta);
+            y = -2.5; // sitting at the bottom
+            z = r * Math.sin(theta);
         } else {
             // Ambient
-            pos[i*3] = (Math.random() - 0.5) * 25;
-            pos[i*3+1] = (Math.random() - 0.5) * 20;
-            pos[i*3+2] = (Math.random() - 0.5) * 15 - 5;
+            x = (Math.random() - 0.5) * 25;
+            y = (Math.random() - 0.5) * 20;
+            z = (Math.random() - 0.5) * 15 - 5;
         }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
     }
     return pos;
 }
 
-function generateAutoColor() {
+function generateAgendaMaker() {
     const pos = new Float32Array(N * 3);
-    
-    // Star outline helper
-    const getStarPoint = (cx, cy, R, r, t, segment) => {
-        const a1 = segment * Math.PI / 5 - Math.PI / 2;
-        const a2 = (segment + 1) * Math.PI / 5 - Math.PI / 2;
-        const r1 = (segment % 2 === 0) ? R : r;
-        const r2 = ((segment + 1) % 2 === 0) ? R : r;
-        const x1 = cx + Math.cos(a1) * r1;
-        const y1 = cy + Math.sin(a1) * r1;
-        const x2 = cx + Math.cos(a2) * r2;
-        const y2 = cy + Math.sin(a2) * r2;
-        return { x: x1 + t * (x2 - x1), y: y1 + t * (y2 - y1) };
-    };
-
     for (let i = 0; i < N; i++) {
         let x, y, z;
         if (i < N * 0.3) {
-            // Wand stick (Diagonal cylinder)
+            // Clipboard / Paper outline
             const t = Math.random();
-            const lx = -3.5 + t * 4.5;
-            const ly = -3.5 + t * 4.5;
-            const angle = Math.random() * Math.PI * 2;
-            const rad = Math.random() * 0.3;
-            // Orthogonal basis for cylinder around x=y
-            const perpX = -0.707 * rad * Math.cos(angle);
-            const perpY = 0.707 * rad * Math.cos(angle);
-            const perpZ = rad * Math.sin(angle);
-            x = lx + perpX;
-            y = ly + perpY;
-            z = perpZ;
-        } else if (i < N * 0.55) {
-            // Main Star at tip
-            const segment = i % 10;
-            const t = Math.random();
-            const pt = getStarPoint(1.5, 1.5, 2.5, 1.0, t, segment);
-            x = pt.x + (Math.random()-0.5)*0.3;
-            y = pt.y + (Math.random()-0.5)*0.3;
-            z = (Math.random()-0.5)*0.4;
-        } else if (i < N * 0.65) {
-            // Sparkle 1
-            const segment = i % 10;
-            const pt = getStarPoint(-1, 2.5, 0.8, 0.3, Math.random(), segment);
-            x = pt.x + (Math.random()-0.5)*0.15;
-            y = pt.y + (Math.random()-0.5)*0.15;
-            z = (Math.random()-0.5)*0.4;
+            const edge = i % 4;
+            if (edge === 0) { x = t*5 - 2.5; y = 3.5; } // Top
+            else if (edge === 1) { x = t*5 - 2.5; y = -3.5; } // Bottom
+            else if (edge === 2) { x = -2.5; y = t*7 - 3.5; } // Left
+            else { x = 2.5; y = t*7 - 3.5; } // Right
+            x += (Math.random()-0.5)*0.3; y += (Math.random()-0.5)*0.3; z = (Math.random()-0.5)*0.3;
         } else if (i < N * 0.75) {
-            // Sparkle 2
-            const segment = i % 10;
-            const pt = getStarPoint(3.5, -0.5, 0.7, 0.25, Math.random(), segment);
-            x = pt.x + (Math.random()-0.5)*0.15;
-            y = pt.y + (Math.random()-0.5)*0.15;
-            z = (Math.random()-0.5)*0.4;
+            // 3 Rows of Checkboxes and Lines
+            const row = i % 3;
+            const rowY = 1.5 - row * 1.5;
+            const type = Math.random();
+            if (type < 0.2) {
+                // Checkbox square outline
+                const t = Math.random();
+                const edge = Math.floor(Math.random()*4);
+                let bx = -1.5, by = rowY;
+                if (edge === 0) { x = bx + t*0.8 - 0.4; y = by + 0.4; }
+                else if (edge === 1) { x = bx + t*0.8 - 0.4; y = by - 0.4; }
+                else if (edge === 2) { x = bx - 0.4; y = by + t*0.8 - 0.4; }
+                else { x = bx + 0.4; y = by + t*0.8 - 0.4; }
+                x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.1;
+            } else if (type < 0.4 && row !== 1) {
+                // Checkmark (V shape) for rows 0 and 2
+                const t = Math.random();
+                if (t < 0.4) {
+                    x = -1.7 + t * 0.5; // -1.7 to -1.5
+                    y = rowY + t * 0.5 - 0.2; // roughly down
+                } else {
+                    const t2 = (t - 0.4) / 0.6;
+                    x = -1.5 + t2 * 0.6; // -1.5 to -0.9
+                    y = rowY - 0.2 + t2 * 0.8; // sharply up
+                }
+                x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.1 + 0.2;
+            } else {
+                // Text line
+                const t = Math.random();
+                x = -0.5 + t * 2.5;
+                y = rowY;
+                x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.1;
+            }
+        } else {
+            // Ambient
+            x = (Math.random() - 0.5) * 25;
+            y = (Math.random() - 0.5) * 20;
+            z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generatePresetStudio() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.2) {
+            // Outer Frame
+            const t = Math.random();
+            const edge = i % 4;
+            if (edge === 0) { x = t*6 - 3; y = 3; } // Top
+            else if (edge === 1) { x = t*6 - 3; y = -3; } // Bottom
+            else if (edge === 2) { x = -3; y = t*6 - 3; } // Left
+            else { x = 3; y = t*6 - 3; } // Right
+            x += (Math.random()-0.5)*0.3; y += (Math.random()-0.5)*0.3; z = (Math.random()-0.5)*0.3;
+        } else if (i < N * 0.5) {
+            // 3 Vertical Tracks
+            const track = i % 3;
+            const tx = -1.5 + track * 1.5; // -1.5, 0, 1.5
+            const t = Math.random();
+            x = tx;
+            y = -2.0 + t * 4.0;
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.1;
+        } else if (i < N * 0.8) {
+            // 3 Knobs (Spheres/Cubes on the tracks)
+            const track = i % 3;
+            const tx = -1.5 + track * 1.5;
+            let ty = 0;
+            if (track === 0) ty = 1.0;
+            if (track === 1) ty = -0.5;
+            if (track === 2) ty = 1.5;
+            
+            // Generate a knob block
+            x = tx + (Math.random()-0.5)*1.0;
+            y = ty + (Math.random()-0.5)*0.6;
+            z = (Math.random()-0.5)*0.6 + 0.2;
         } else {
             // Ambient
             x = (Math.random() - 0.5) * 25;
@@ -220,10 +251,10 @@ function generateAutoColor() {
 }
 
 const positions = [
-    generateToolSearch(),
-    generateVizBank(),
-    generateThemePalettes(),
-    generateAutoColor()
+    generateThemeExtractor(),
+    generateSlideDoctor(),
+    generateAgendaMaker(),
+    generatePresetStudio()
 ];
 
 // --- 3. PARTICLES & LINES SETUP ---
