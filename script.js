@@ -77,28 +77,53 @@ function generateToolSearch() {
 function generateVizBank() {
     const pos = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) {
-        if (i < N * 0.8) {
-            // Layered slides
-            let layer = i % 6;
-            let slideW = 5;
-            let slideH = 3;
-            let px = (Math.random() - 0.5) * slideW;
-            let py = (Math.random() - 0.5) * slideH;
-            let pz = -layer * 2.0 + 3;
-            
-            // Fanning out effect
-            px += (layer - 2.5) * 1.5;
-            py += (layer - 2.5) * -0.5;
-            
-            pos[i*3] = px;
-            pos[i*3+1] = py;
-            pos[i*3+2] = pz;
+        let x, y, z;
+        if (i < N * 0.2) {
+            // Gallery Frame (4 borders)
+            const t = Math.random();
+            const edge = i % 4;
+            if (edge === 0) { x = t*8 - 4; y = 3; } // Top
+            else if (edge === 1) { x = t*8 - 4; y = -3; } // Bottom
+            else if (edge === 2) { x = -4; y = t*6 - 3; } // Left
+            else { x = 4; y = t*6 - 3; } // Right
+            // Add thickness
+            x += (Math.random()-0.5)*0.5;
+            y += (Math.random()-0.5)*0.5;
+            z = (Math.random()-0.5)*0.5;
+        } else if (i < N * 0.35) {
+            // Sun (Solid circle)
+            const r = Math.sqrt(Math.random()) * 1.2;
+            const theta = Math.random() * Math.PI * 2;
+            x = 1.5 + r * Math.cos(theta);
+            y = 1.5 + r * Math.sin(theta);
+            z = (Math.random()-0.5)*0.4;
+        } else if (i < N * 0.55) {
+            // Mountain 1 (Filled triangle)
+            let r1 = Math.random(), r2 = Math.random();
+            if (r1 + r2 > 1) { r1 = 1-r1; r2 = 1-r2; }
+            const ax = -4, ay = -3;
+            const bx = 0.5, by = -3;
+            const cx = -1.5, cy = 1.0;
+            x = ax + r1*(bx-ax) + r2*(cx-ax);
+            y = ay + r1*(by-ay) + r2*(cy-ay);
+            z = (Math.random()-0.5)*0.5;
+        } else if (i < N * 0.75) {
+            // Mountain 2 (Filled triangle)
+            let r1 = Math.random(), r2 = Math.random();
+            if (r1 + r2 > 1) { r1 = 1-r1; r2 = 1-r2; }
+            const ax = -1.5, ay = -3;
+            const bx = 4, by = -3;
+            const cx = 1.5, cy = -0.5;
+            x = ax + r1*(bx-ax) + r2*(cx-ax);
+            y = ay + r1*(by-ay) + r2*(cy-ay);
+            z = (Math.random()-0.5)*0.5 + 0.3; // Bring slightly forward
         } else {
             // Ambient
-            pos[i*3] = (Math.random() - 0.5) * 25;
-            pos[i*3+1] = (Math.random() - 0.5) * 20;
-            pos[i*3+2] = (Math.random() - 0.5) * 15 - 5;
+            x = (Math.random() - 0.5) * 25;
+            y = (Math.random() - 0.5) * 20;
+            z = (Math.random() - 0.5) * 15 - 5;
         }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
     }
     return pos;
 }
@@ -131,33 +156,65 @@ function generateThemePalettes() {
 
 function generateAutoColor() {
     const pos = new Float32Array(N * 3);
+    
+    // Star outline helper
+    const getStarPoint = (cx, cy, R, r, t, segment) => {
+        const a1 = segment * Math.PI / 5 - Math.PI / 2;
+        const a2 = (segment + 1) * Math.PI / 5 - Math.PI / 2;
+        const r1 = (segment % 2 === 0) ? R : r;
+        const r2 = ((segment + 1) % 2 === 0) ? R : r;
+        const x1 = cx + Math.cos(a1) * r1;
+        const y1 = cy + Math.sin(a1) * r1;
+        const x2 = cx + Math.cos(a2) * r2;
+        const y2 = cy + Math.sin(a2) * r2;
+        return { x: x1 + t * (x2 - x1), y: y1 + t * (y2 - y1) };
+    };
+
     for (let i = 0; i < N; i++) {
+        let x, y, z;
         if (i < N * 0.3) {
-            // Sphere
-            const p = randomPointInSphere(2.5);
-            pos[i*3] = p.x - 4;
-            pos[i*3+1] = p.y + 1.5;
-            pos[i*3+2] = p.z;
+            // Wand stick (Diagonal cylinder)
+            const t = Math.random();
+            const lx = -3.5 + t * 4.5;
+            const ly = -3.5 + t * 4.5;
+            const angle = Math.random() * Math.PI * 2;
+            const rad = Math.random() * 0.3;
+            // Orthogonal basis for cylinder around x=y
+            const perpX = -0.707 * rad * Math.cos(angle);
+            const perpY = 0.707 * rad * Math.cos(angle);
+            const perpZ = rad * Math.sin(angle);
+            x = lx + perpX;
+            y = ly + perpY;
+            z = perpZ;
         } else if (i < N * 0.55) {
-            // Cube
-            pos[i*3] = (Math.random() - 0.5) * 3 + 3;
-            pos[i*3+1] = (Math.random() - 0.5) * 3 - 2;
-            pos[i*3+2] = (Math.random() - 0.5) * 3;
-        } else if (i < N * 0.8) {
-            // Torus knot-like / organic wave shape
-            const t = Math.random() * Math.PI * 2;
-            const u = Math.random() * Math.PI * 2;
-            const r = 1.0 + Math.random() * 0.5;
-            const r2 = 3.0;
-            pos[i*3] = (r2 + r * Math.cos(u)) * Math.cos(t) + 1;
-            pos[i*3+1] = (r2 + r * Math.cos(u)) * Math.sin(t) + 2;
-            pos[i*3+2] = r * Math.sin(u) - 2;
+            // Main Star at tip
+            const segment = i % 10;
+            const t = Math.random();
+            const pt = getStarPoint(1.5, 1.5, 2.5, 1.0, t, segment);
+            x = pt.x + (Math.random()-0.5)*0.3;
+            y = pt.y + (Math.random()-0.5)*0.3;
+            z = (Math.random()-0.5)*0.4;
+        } else if (i < N * 0.65) {
+            // Sparkle 1
+            const segment = i % 10;
+            const pt = getStarPoint(-1, 2.5, 0.8, 0.3, Math.random(), segment);
+            x = pt.x + (Math.random()-0.5)*0.15;
+            y = pt.y + (Math.random()-0.5)*0.15;
+            z = (Math.random()-0.5)*0.4;
+        } else if (i < N * 0.75) {
+            // Sparkle 2
+            const segment = i % 10;
+            const pt = getStarPoint(3.5, -0.5, 0.7, 0.25, Math.random(), segment);
+            x = pt.x + (Math.random()-0.5)*0.15;
+            y = pt.y + (Math.random()-0.5)*0.15;
+            z = (Math.random()-0.5)*0.4;
         } else {
             // Ambient
-            pos[i*3] = (Math.random() - 0.5) * 25;
-            pos[i*3+1] = (Math.random() - 0.5) * 20;
-            pos[i*3+2] = (Math.random() - 0.5) * 15 - 5;
+            x = (Math.random() - 0.5) * 25;
+            y = (Math.random() - 0.5) * 20;
+            z = (Math.random() - 0.5) * 15 - 5;
         }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
     }
     return pos;
 }
