@@ -397,8 +397,9 @@ function generateMediaExporter() {
     return pos;
 }
 
+let baseToolSearch = generateToolSearch();
 const positions = [
-    generateToolSearch(),
+    new Float32Array(baseToolSearch),
     generateVizBank(),
     generateThemePalettes(),
     generateAutoColor(),
@@ -563,6 +564,27 @@ function animate() {
     
     targetX = mouseX * 0.5;
     targetY = mouseY * 0.5;
+    
+    // --- TOOL SEARCH DYNAMIC ANIMATION ---
+    if (morphObj.progress < 1.0 && typeof baseToolSearch !== 'undefined') {
+        const p0 = positions[0];
+        const b0 = baseToolSearch;
+        
+        for(let i=1000; i<3600; i++) {
+            // Wave and shooting forward
+            let offsetZ = (b0[i*3+2] + time * (2 + (i%5))) % 7 - 2;
+            let waveX = b0[i*3] + Math.sin(time*3 + i*0.01) * 0.5 * (offsetZ + 2)/7;
+            
+            p0[i*3] = waveX;
+            p0[i*3+1] = b0[i*3+1];
+            p0[i*3+2] = offsetZ;
+        }
+        
+        if (morphObj.progress < 1.0) {
+            updateMorph();
+        }
+    }
+    // -------------------------------------
     
     // Mouse parallax effect (rotation and position)
     pointsMesh.rotation.y += (targetX * 0.3 - pointsMesh.rotation.y) * 0.05;
