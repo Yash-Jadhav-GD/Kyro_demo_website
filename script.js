@@ -110,19 +110,11 @@ function drawAmbient(pos, startIdx, count) {
 
 
 
-let baseToolSearch = null;
 function generateToolSearch() {
     const pos = new Float32Array(N * 3);
-    // Search Bar (0 - 1000)
-    drawRectOutline(pos, 0, 1000, 0, 1, 4, 1);
-    
-    // Command Waves / Shooting particles (1000 - 3600)
-    for(let i=1000; i<3600; i++) {
-        // Start them inside the search bar
-        pos[i*3] = (Math.random() - 0.5) * 3.8;
-        pos[i*3+1] = 1 + (Math.random() - 0.5) * 0.8;
-        pos[i*3+2] = (Math.random() - 0.5) * 2 - 1; 
-    }
+    drawRectOutline(pos, 0, 1800, -1, 0.5, 3, 2); // Command Window
+    drawCircleOutline(pos, 1800, 1000, 1.5, -1, 0.8); // Magnifier glass
+    drawLine(pos, 2800, 800, 1.5+0.56, -1-0.56, 1.5+1.5, -1-1.5); // Handle
     drawAmbient(pos, 3600, 400);
     return pos;
 }
@@ -565,26 +557,7 @@ function animate() {
     targetX = mouseX * 0.5;
     targetY = mouseY * 0.5;
     
-    // --- TOOL SEARCH DYNAMIC ANIMATION ---
-    if (morphObj.progress < 1.0 && typeof baseToolSearch !== 'undefined') {
-        const p0 = positions[0];
-        const b0 = baseToolSearch;
-        
-        for(let i=1000; i<3600; i++) {
-            // Wave and shooting forward
-            let offsetZ = (b0[i*3+2] + time * (2 + (i%5))) % 7 - 2;
-            let waveX = b0[i*3] + Math.sin(time*3 + i*0.01) * 0.5 * (offsetZ + 2)/7;
-            
-            p0[i*3] = waveX;
-            p0[i*3+1] = b0[i*3+1];
-            p0[i*3+2] = offsetZ;
-        }
-        
-        if (morphObj.progress < 1.0) {
-            updateMorph();
-        }
-    }
-    // -------------------------------------
+
     
     // Mouse parallax effect (rotation and position)
     pointsMesh.rotation.y += (targetX * 0.3 - pointsMesh.rotation.y) * 0.05;
