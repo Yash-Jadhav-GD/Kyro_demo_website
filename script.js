@@ -109,13 +109,21 @@ function drawAmbient(pos, startIdx, count) {
 }
 
 
+
+let baseToolSearch = null;
 function generateToolSearch() {
     const pos = new Float32Array(N * 3);
-
-    drawRectOutline(pos, 0, 1800, -1, 0.5, 3, 2); // Command Window
-    drawCircleOutline(pos, 1800, 1000, 1.5, -1, 0.8); // Magnifier glass
-    drawLine(pos, 2800, 800, 1.5+0.56, -1-0.56, 1.5+1.5, -1-1.5); // Handle
-        drawAmbient(pos, 3600, 400);
+    // Search Bar (0 - 1000)
+    drawRectOutline(pos, 0, 1000, 0, 1, 4, 1);
+    
+    // Command Waves / Shooting particles (1000 - 3600)
+    for(let i=1000; i<3600; i++) {
+        // Start them inside the search bar
+        pos[i*3] = (Math.random() - 0.5) * 3.8;
+        pos[i*3+1] = 1 + (Math.random() - 0.5) * 0.8;
+        pos[i*3+2] = (Math.random() - 0.5) * 2 - 1; 
+    }
+    drawAmbient(pos, 3600, 400);
     return pos;
 }
 
