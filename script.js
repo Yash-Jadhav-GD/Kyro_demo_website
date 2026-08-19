@@ -559,7 +559,7 @@ function animate() {
 
     
     // Continuous horizontal rotation + Mouse parallax
-    pointsMesh.rotation.y = time * 0.5 + targetX * 0.5;
+    pointsMesh.rotation.y = time * 0.15 + targetX * 0.5;
     pointsMesh.rotation.x += (targetY * 0.3 - pointsMesh.rotation.x) * 0.05;
     
     linesMesh.rotation.y = pointsMesh.rotation.y;
