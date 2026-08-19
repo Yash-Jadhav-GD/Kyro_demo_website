@@ -142,10 +142,70 @@ function generateThemePalettes() {
 
 function generateAutoColor() {
     const pos = new Float32Array(N * 3);
-    drawSolidRect(pos, 0, 1000, 0, -1.5, 0.5, 3); // Brush Handle
-    drawRectOutline(pos, 1000, 600, 0, 0.3, 0.8, 0.6); // Ferrule (metal part)
-    drawSolidRect(pos, 1600, 1200, 0, 1.3, 0.7, 1.4); // Bristles
-    drawSolidCircle(pos, 2800, 800, 0, 2.3, 0.4); // Paint blob on tip
+    for(let i=0; i<3600; i++) {
+        let x=0, y=0, z=0;
+        let t = Math.random();
+        
+        if (i < 1000) {
+            // Handle: curved cone pointing UP
+            y = 0.5 + t * 2.5;
+            let width = 0.8 * Math.pow(1 - (y - 0.5)/2.5, 0.6);
+            if (i < 500) x = -width/2; // Left edge
+            else x = width/2; // Right edge
+            x += (Math.random()-0.5)*0.08;
+            y += (Math.random()-0.5)*0.08;
+        } else if (i < 1600) {
+            // Ferrule: Rectangle from y=0 to y=0.5, width 0.8
+            let edge = i % 4;
+            if (edge === 0) { x = -0.4 + t*0.8; y = 0; } // bottom
+            else if (edge === 1) { x = -0.4 + t*0.8; y = 0.5; } // top
+            else if (edge === 2) { x = -0.4; y = t*0.5; } // left
+            else { x = 0.4; y = t*0.5; } // right
+            x += (Math.random()-0.5)*0.05; y += (Math.random()-0.5)*0.05;
+        } else if (i < 2800) {
+            // Bristles outline
+            if (i < 2200) { // Left bristle edge
+                let y_val = -t * 2;
+                let base_x = -0.4 + t * (-0.6);
+                let bulge = Math.sin(t * Math.PI) * 0.2; 
+                x = base_x + bulge;
+                y = y_val;
+            } else { // Right bristle edge
+                let y_val = -t * 2;
+                let base_x = 0.4 + t * (-1.4);
+                let bulge = Math.sin(t * Math.PI) * 0.8;
+                x = base_x + bulge;
+                y = y_val;
+            }
+            x += (Math.random()-0.5)*0.08; y += (Math.random()-0.5)*0.08;
+        } else {
+            // Internal fill / thickness
+            if(Math.random() < 0.6) {
+                // handle fill
+                y = 0.5 + Math.random() * 2.5;
+                let width = 0.8 * Math.pow(1 - (y - 0.5)/2.5, 0.6);
+                x = (Math.random() - 0.5) * width;
+            } else {
+                // bristle fill
+                let y_val = -t * 2;
+                let left_x = -0.4 + t * (-0.6) + Math.sin(t * Math.PI) * 0.2;
+                let right_x = 0.4 + t * (-1.4) + Math.sin(t * Math.PI) * 0.8;
+                x = left_x + Math.random() * (right_x - left_x);
+                y = y_val;
+            }
+            z = (Math.random()-0.5)*0.4;
+        }
+        
+        // Rotate by -45 degrees
+        let angle = -Math.PI / 4;
+        let rx = x * Math.cos(angle) - y * Math.sin(angle);
+        let ry = x * Math.sin(angle) + y * Math.cos(angle);
+        
+        pos[i*3] = rx;
+        pos[i*3+1] = ry;
+        pos[i*3+2] = z + (Math.random()-0.5)*0.1;
+    }
+    
     drawAmbient(pos, 3600, 400);
     return pos;
 }
