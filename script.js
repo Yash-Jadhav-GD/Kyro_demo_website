@@ -435,6 +435,164 @@ function generatePresetStudio() {
     return pos;
 }
 
+function generateICE() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.8) {
+            // 9 squares (3x3 grid)
+            const squareIdx = i % 9;
+            const col = squareIdx % 3;
+            const row = Math.floor(squareIdx / 3);
+            const cx = -2 + col * 2;
+            const cy = 2 - row * 2;
+            // outline of a square
+            const t = Math.random();
+            const edge = Math.floor(Math.random() * 4);
+            const size = 1.2;
+            const half = size / 2;
+            if (edge === 0) { x = cx - half + t * size; y = cy + half; } // top
+            else if (edge === 1) { x = cx - half + t * size; y = cy - half; } // bottom
+            else if (edge === 2) { x = cx - half; y = cy - half + t * size; } // left
+            else { x = cx + half; y = cy - half + t * size; } // right
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateIconsLogos() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.8) {
+            const shape = i % 3;
+            if (shape === 0) {
+                // Circle at top left (-1.5, 1.5)
+                const r = 1.2;
+                const angle = Math.random() * Math.PI * 2;
+                x = -1.5 + Math.cos(angle) * r;
+                y = 1.5 + Math.sin(angle) * r;
+            } else if (shape === 1) {
+                // Square at top right (1.5, 1.5)
+                const t = Math.random();
+                const edge = Math.floor(Math.random() * 4);
+                const cx = 1.5, cy = 1.5, half = 1.2;
+                if (edge === 0) { x = cx - half + t * half * 2; y = cy + half; }
+                else if (edge === 1) { x = cx - half + t * half * 2; y = cy - half; }
+                else if (edge === 2) { x = cx - half; y = cy - half + t * half * 2; }
+                else { x = cx + half; y = cy - half + t * half * 2; }
+            } else {
+                // Triangle at bottom (0, -1.5)
+                const t = Math.random();
+                const edge = Math.floor(Math.random() * 3);
+                // vertices: (0, 0), (-1.5, -2.5), (1.5, -2.5)
+                if (edge === 0) { x = -1.5 + t * 3; y = -2.5; } // bottom
+                else if (edge === 1) { x = -1.5 + t * 1.5; y = -2.5 + t * 2.5; } // left
+                else { x = 0 + t * 1.5; y = 0 - t * 2.5; } // right
+            }
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateProfileCards() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.3) {
+            // Card Outline (-2 to 2 width, -3 to 3 height)
+            const t = Math.random();
+            const edge = i % 4;
+            if (edge === 0) { x = -2 + t * 4; y = 3; }
+            else if (edge === 1) { x = -2 + t * 4; y = -3; }
+            else if (edge === 2) { x = -2; y = -3 + t * 6; }
+            else { x = 2; y = -3 + t * 6; }
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.4) {
+            // Lanyard clip
+            const t = Math.random();
+            const edge = i % 4;
+            if (edge === 0) { x = -0.5 + t; y = 3.5; }
+            else if (edge === 1) { x = -0.5 + t; y = 3; }
+            else if (edge === 2) { x = -0.5; y = 3 + t * 0.5; }
+            else { x = 0.5; y = 3 + t * 0.5; }
+            x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.1;
+        } else if (i < N * 0.55) {
+            // Photo (Circle at top)
+            const angle = Math.random() * Math.PI * 2;
+            const r = 1.0;
+            x = Math.cos(angle) * r;
+            y = 1.0 + Math.sin(angle) * r;
+            x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.1;
+        } else if (i < N * 0.8) {
+            // 3 text lines
+            const row = i % 3;
+            const t = Math.random();
+            x = -1.2 + t * 2.4;
+            if (row === 0) y = -0.8;
+            else if (row === 1) y = -1.6;
+            else { y = -2.4; x = -1.2 + t * 1.5; } // Shorter last line
+            x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.1;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateArcMenu() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.15) {
+            // Central button
+            const angle = Math.random() * Math.PI * 2;
+            const r = 0.6;
+            x = Math.cos(angle) * r;
+            y = Math.sin(angle) * r;
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.75) {
+            // 4 Radial segments
+            const segment = i % 4; // 0,1,2,3
+            const startAngle = segment * (Math.PI / 2) + 0.15; // padding
+            const endAngle = (segment + 1) * (Math.PI / 2) - 0.15;
+            
+            const part = Math.random();
+            const angle = startAngle + Math.random() * (endAngle - startAngle);
+            if (part < 0.4) {
+                // Inner arc
+                const r = 1.2;
+                x = Math.cos(angle) * r; y = Math.sin(angle) * r;
+            } else if (part < 0.8) {
+                // Outer arc
+                const r = 2.4;
+                x = Math.cos(angle) * r; y = Math.sin(angle) * r;
+            } else {
+                // Connecting lines
+                const r = 1.2 + Math.random() * 1.2;
+                const a = (Math.random() < 0.5) ? startAngle : endAngle;
+                x = Math.cos(a) * r; y = Math.sin(a) * r;
+            }
+            x += (Math.random()-0.5)*0.15; y += (Math.random()-0.5)*0.15; z = (Math.random()-0.5)*0.2;
+        } else {
+            // Ambient
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+
 const positions = [
     generateToolSearch(),
     generateVizBank(),
@@ -443,7 +601,11 @@ const positions = [
     generateThemeExtractor(),
     generateSlideDoctor(),
     generateAgendaMaker(),
-    generatePresetStudio()
+    generatePresetStudio(),
+    generateICE(),
+    generateIconsLogos(),
+    generateProfileCards(),
+    generateArcMenu()
 ];
 
 // --- 3. PARTICLES & LINES SETUP ---
