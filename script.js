@@ -397,7 +397,7 @@ function generateMediaExporter() {
     return pos;
 }
 
-let baseToolSearch = generateToolSearch();
+baseToolSearch = generateToolSearch();
 const positions = [
     new Float32Array(baseToolSearch),
     generateVizBank(),
