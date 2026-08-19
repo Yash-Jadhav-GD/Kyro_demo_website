@@ -492,8 +492,8 @@ function createDotTexture() {
     const ctx = canvas.getContext('2d');
     const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
     gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    gradient.addColorStop(0.2, 'rgba(226, 192, 141, 0.9)'); // Gold center
-    gradient.addColorStop(0.6, 'rgba(226, 192, 141, 0.2)');
+    gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.9)'); 
+    gradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.2)');
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 64, 64);
@@ -506,7 +506,7 @@ const material = new THREE.PointsMaterial({
     transparent: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
-    color: 0xffffff
+    color: new THREE.Color('#B1A8D8')
 });
 
 const pointsMesh = new THREE.Points(geometry, material);
@@ -529,12 +529,20 @@ lineGeometry.setAttribute('position', geometry.getAttribute('position'));
 lineGeometry.setIndex(lineIndices);
 
 const lineMaterial = new THREE.LineBasicMaterial({
-    color: 0xe2c08d,
+    color: new THREE.Color('#B1A8D8'),
     transparent: true,
     opacity: 0.15,
     blending: THREE.AdditiveBlending,
     depthWrite: false
 });
+
+// Color Palette for rotating sections
+const paletteColors = [
+    new THREE.Color('#B1A8D8'),
+    new THREE.Color('#FFD3A6'),
+    new THREE.Color('#8F9BC7')
+];
+
 const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
 linesMesh.position.x = 4;
 scene.add(linesMesh);
@@ -560,10 +568,13 @@ function updateMorph() {
     }
     geometry.attributes.position.needsUpdate = true;
     
-    // Optional: change color based on section
-    if (idx1 === 2 || idx2 === 2) {
-        // Theme palettes - we can inject some color logic here if we wanted
-    }
+    // Rotate colors based on section index
+    let c1 = paletteColors[idx1 % 3];
+    let c2 = paletteColors[idx2 % 3];
+    let lerpedColor = c1.clone().lerp(c2, easeT);
+    
+    material.color.copy(lerpedColor);
+    lineMaterial.color.copy(lerpedColor);
 }
 
 // Scroll Morphing
