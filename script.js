@@ -593,6 +593,395 @@ function generateArcMenu() {
 }
 
 
+function generateFloatingColourPalette() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.8) {
+            // Solid colour wheel / disk
+            const r = Math.sqrt(Math.random()) * 2.5;
+            const angle = Math.random() * Math.PI * 2;
+            x = Math.cos(angle) * r;
+            y = Math.sin(angle) * r;
+            z = (Math.random()-0.5)*0.2;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateAligners() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.6) {
+            // 3 Horizontal lines, 3 Vertical lines
+            const isHoriz = Math.random() < 0.5;
+            const idx = Math.floor(Math.random()*3); // 0,1,2
+            const coord = -1.5 + idx * 1.5;
+            const t = Math.random();
+            if (isHoriz) { x = -2.5 + t*5; y = coord; }
+            else { x = coord; y = -2.5 + t*5; }
+            x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.1;
+        } else if (i < N * 0.8) {
+            // A few aligned blocks
+            const t = Math.random();
+            const bx = (Math.random() < 0.5) ? -1.5 : 0;
+            const by = (Math.random() < 0.5) ? 0 : 1.5;
+            x = bx + 0.2 + t*0.8; 
+            y = by - 0.2 - Math.random()*0.8;
+            z = (Math.random()-0.5)*0.2;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateCopyPasteDimensions() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.4) {
+            // Ruler body outline
+            const t = Math.random();
+            const edge = i % 4;
+            if (edge === 0) { x = t*6 - 3; y = 1; }
+            else if (edge === 1) { x = t*6 - 3; y = -1; }
+            else if (edge === 2) { x = -3; y = t*2 - 1; }
+            else { x = 3; y = t*2 - 1; }
+            x += (Math.random()-0.5)*0.15; y += (Math.random()-0.5)*0.15; z = (Math.random()-0.5)*0.15;
+        } else if (i < N * 0.8) {
+            // Ruler ticks
+            const numTicks = 20;
+            const tickIdx = i % numTicks;
+            const tx = -2.85 + (tickIdx / (numTicks-1)) * 5.7;
+            const isLong = (tickIdx % 5 === 0);
+            const ty = 1;
+            const tlen = isLong ? 0.6 : 0.3;
+            const t = Math.random();
+            x = tx + (Math.random()-0.5)*0.05;
+            y = ty - t * tlen;
+            z = (Math.random()-0.5)*0.15;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateMatchAll() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.8) {
+            // Equal sign (two thick bars)
+            const t1 = Math.random();
+            const t2 = Math.random();
+            const bar = (i < N * 0.4) ? 1 : -1;
+            x = -2.5 + t1 * 5;
+            y = bar * 1.0 + (t2 - 0.5) * 0.8;
+            z = (Math.random()-0.5)*0.3;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateFindSame() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.8) {
+            // 3 matching circles
+            const circleIdx = i % 3;
+            const cx = -2.5 + circleIdx * 2.5;
+            const cy = 0;
+            const angle = Math.random() * Math.PI * 2;
+            const r = 1.0;
+            const thick = Math.random() * 0.3; // thick rings
+            x = cx + Math.cos(angle) * (r - thick);
+            y = cy + Math.sin(angle) * (r - thick);
+            z = (Math.random()-0.5)*0.3;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateTextFuse() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.8) {
+            // Two arrows merging: >  <
+            const t = Math.random();
+            const side = (i < N * 0.4) ? -1 : 1; // Left or Right
+            const edge = (Math.random() < 0.5) ? 1 : -1; // Top half or bottom half of >
+            
+            // Base x is -2 or 2. Arrow tip at -0.5 or 0.5.
+            const startX = side * 2.5;
+            const endX = side * 0.5;
+            
+            x = startX + t * (endX - startX);
+            y = edge * (1 - t) * 1.5; // Starts at y=1.5/-1.5, ends at y=0
+            
+            // Add some thickness to the arrow lines
+            x += (Math.random()-0.5)*0.3; y += (Math.random()-0.5)*0.3; z = (Math.random()-0.5)*0.3;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateTextractor() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.3) {
+            // Main text box
+            const t = Math.random();
+            x = -1.5 + (Math.random() - 0.5) * 2.5;
+            y = (Math.random() - 0.5) * 3;
+            z = (Math.random() - 0.5) * 0.5;
+        } else if (i < N * 0.5) {
+            // Arrow pointing right
+            const t = Math.random();
+            x = 0 + t * 1.5;
+            y = 0;
+            // Arrow head
+            if (t > 0.8) {
+                y += (Math.random() - 0.5) * (t - 0.8) * 3;
+            }
+            x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.8) {
+            // 3 split boxes on the right
+            const boxIdx = i % 3;
+            const by = 2 - boxIdx * 2; // 2, 0, -2
+            x = 2.5 + (Math.random() - 0.5) * 1.5;
+            y = by + (Math.random() - 0.5) * 1.0;
+            z = (Math.random() - 0.5) * 0.5;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateTableTools() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.8) {
+            // 4x3 Table Grid
+            const isHoriz = Math.random() < 0.5;
+            const t = Math.random();
+            if (isHoriz) {
+                // 4 horizontal lines
+                const row = Math.floor(Math.random() * 4);
+                x = -2.5 + t * 5;
+                y = 2.5 - row * 1.66;
+            } else {
+                // 5 vertical lines
+                const col = Math.floor(Math.random() * 5);
+                x = -2.5 + col * 1.25;
+                y = -2.5 + t * 5;
+            }
+            x += (Math.random()-0.5)*0.15; y += (Math.random()-0.5)*0.15; z = (Math.random()-0.5)*0.15;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateTinyAssets() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.5) {
+            // Toolbox base
+            x = (Math.random() - 0.5) * 4;
+            y = -1 + (Math.random() - 0.5) * 3;
+            z = (Math.random() - 0.5) * 2;
+            // Make it a hollow box or solid? Let's do faces.
+            if (Math.random() > 0.5) z = (Math.random() > 0.5) ? 1 : -1;
+            else if (Math.random() > 0.5) x = (Math.random() > 0.5) ? 2 : -2;
+            else y = (Math.random() > 0.5) ? 0.5 : -2.5;
+            x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1;
+        } else if (i < N * 0.8) {
+            // Handle (arc at the top)
+            const angle = Math.random() * Math.PI; // semi-circle
+            const r = 1.0;
+            x = Math.cos(angle) * r;
+            y = 1.0 + Math.sin(angle) * r;
+            z = 0;
+            // Thicken handle
+            x += (Math.random()-0.5)*0.3; y += (Math.random()-0.5)*0.3; z += (Math.random()-0.5)*0.3;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateOCR() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.5) {
+            // Broken corners (Viewfinder)
+            const corner = i % 4; // 0:TL, 1:TR, 2:BL, 3:BR
+            const t = Math.random();
+            const isHoriz = Math.random() < 0.5;
+            const cx = (corner === 1 || corner === 3) ? 2.5 : -2.5;
+            const cy = (corner === 0 || corner === 1) ? 2.5 : -2.5;
+            const dirX = (cx < 0) ? 1 : -1;
+            const dirY = (cy < 0) ? 1 : -1;
+            
+            if (isHoriz) {
+                x = cx + t * 1.5 * dirX;
+                y = cy;
+            } else {
+                x = cx;
+                y = cy + t * 1.5 * dirY;
+            }
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.8) {
+            // Scanning line (horizontal)
+            const t = Math.random();
+            x = -2.5 + t * 5.0;
+            y = 0.5; // static scan line
+            // Add dense particles for scan glow
+            y += (Math.random()-0.5)*0.3; z = (Math.random()-0.5)*0.4;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateHtmlToPpt() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.3) {
+            // HTML code brackets < >
+            const t = Math.random();
+            const edge = Math.floor(Math.random() * 4); // top-left, bottom-left of < and top-right, bottom-right of >
+            if (edge === 0) { x = -2.5 - t; y = 1.5 - t*1.5; } // < top
+            else if (edge === 1) { x = -3.5 + t; y = 0 - t*1.5; } // < bottom
+            else if (edge === 2) { x = -0.5 + t; y = 1.5 - t*1.5; } // > top
+            else { x = 0.5 - t; y = 0 - t*1.5; } // > bottom
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.45) {
+            // Arrow
+            const t = Math.random();
+            x = 1.0 + t * 1.0;
+            y = 0;
+            x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.1;
+        } else if (i < N * 0.8) {
+            // PPT Slide
+            const t = Math.random();
+            const edge = i % 4;
+            if (edge === 0) { x = 2.5 + t*3; y = 1.5; }
+            else if (edge === 1) { x = 2.5 + t*3; y = -1.5; }
+            else if (edge === 2) { x = 2.5; y = -1.5 + t*3; }
+            else { x = 5.5; y = -1.5 + t*3; }
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateHtmlSlideshow() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.4) {
+            // Browser window outline
+            const t = Math.random();
+            const edge = i % 4;
+            if (edge === 0) { x = -3 + t*6; y = 2.5; }
+            else if (edge === 1) { x = -3 + t*6; y = -2.5; }
+            else if (edge === 2) { x = -3; y = -2.5 + t*5; }
+            else { x = 3; y = -2.5 + t*5; }
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.5) {
+            // Top bar
+            const t = Math.random();
+            x = -3 + t * 6; y = 1.5;
+            x += (Math.random()-0.5)*0.1; y += (Math.random()-0.5)*0.1; z = (Math.random()-0.5)*0.1;
+        } else if (i < N * 0.8) {
+            // 3 dots
+            const dot = i % 3;
+            const cx = -2.5 + dot * 0.5;
+            const angle = Math.random() * Math.PI * 2;
+            const r = 0.15;
+            x = cx + Math.cos(angle)*r;
+            y = 2.0 + Math.sin(angle)*r;
+            z = (Math.random()-0.5)*0.2;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+function generateMediaExporter() {
+    const pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+        let x, y, z;
+        if (i < N * 0.4) {
+            // Box (U shape, missing top)
+            const t = Math.random();
+            const edge = i % 3;
+            if (edge === 0) { x = -2 + t*4; y = -2; } // Bottom
+            else if (edge === 1) { x = -2; y = -2 + t*3; } // Left
+            else { x = 2; y = -2 + t*3; } // Right
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else if (i < N * 0.8) {
+            // Arrow pointing up and right
+            const t = Math.random();
+            const part = i % 3;
+            if (part === 0) {
+                // stem
+                x = -1 + t * 3.5; y = -1 + t * 3.5;
+            } else if (part === 1) {
+                // head left
+                x = 2.5 - t * 2.0; y = 2.5;
+            } else {
+                // head right
+                x = 2.5; y = 2.5 - t * 2.0;
+            }
+            x += (Math.random()-0.5)*0.2; y += (Math.random()-0.5)*0.2; z = (Math.random()-0.5)*0.2;
+        } else {
+            x = (Math.random() - 0.5) * 25; y = (Math.random() - 0.5) * 20; z = (Math.random() - 0.5) * 15 - 5;
+        }
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+    }
+    return pos;
+}
+
+
 const positions = [
     generateToolSearch(),
     generateVizBank(),
@@ -605,7 +994,20 @@ const positions = [
     generateICE(),
     generateIconsLogos(),
     generateProfileCards(),
-    generateArcMenu()
+    generateArcMenu(),
+    generateFloatingColourPalette(),
+    generateAligners(),
+    generateCopyPasteDimensions(),
+    generateMatchAll(),
+    generateFindSame(),
+    generateTextFuse(),
+    generateTextractor(),
+    generateTableTools(),
+    generateTinyAssets(),
+    generateOCR(),
+    generateHtmlToPpt(),
+    generateHtmlSlideshow(),
+    generateMediaExporter()
 ];
 
 // --- 3. PARTICLES & LINES SETUP ---
