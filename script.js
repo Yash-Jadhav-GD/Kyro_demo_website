@@ -495,7 +495,7 @@ function updateMorph() {
     let pos2 = positions[idx2];
     
     let current = geometry.attributes.position.array;
-    for(let i=0; i<N*3; i++) {
+    for(let i=0; i<3600*3; i++) {
         current[i] = pos1[i] + (pos2[i] - pos1[i]) * easeT;
     }
     geometry.attributes.position.needsUpdate = true;
@@ -572,6 +572,23 @@ function animate() {
     linesMesh.position.y = pointsMesh.position.y;
     linesMesh.position.x = pointsMesh.position.x;
     
+    // Background particles slow drift
+    const current = geometry.attributes.position.array;
+    for(let i=3600; i<N; i++) {
+        current[i*3] += Math.sin(i) * 0.01;
+        current[i*3+1] += Math.cos(i) * 0.01;
+        current[i*3+2] += Math.sin(i*2) * 0.01;
+        
+        // Wrap around bounds
+        if (current[i*3] > 15) current[i*3] = -15;
+        if (current[i*3] < -15) current[i*3] = 15;
+        if (current[i*3+1] > 15) current[i*3+1] = -15;
+        if (current[i*3+1] < -15) current[i*3+1] = 15;
+        if (current[i*3+2] > 10) current[i*3+2] = -20;
+        if (current[i*3+2] < -20) current[i*3+2] = 10;
+    }
+    geometry.attributes.position.needsUpdate = true;
+
     // Slight breathing effect
     const scale = 1.0 + Math.sin(time * 0.5) * 0.02;
     pointsMesh.scale.set(scale, scale, scale);
