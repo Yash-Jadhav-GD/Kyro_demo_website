@@ -389,9 +389,8 @@ function generateMediaExporter() {
     return pos;
 }
 
-baseToolSearch = generateToolSearch();
 const positions = [
-    new Float32Array(baseToolSearch),
+    generateToolSearch(),
     generateVizBank(),
     generateThemePalettes(),
     generateAutoColor(),
