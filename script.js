@@ -142,11 +142,11 @@ function generateThemePalettes() {
 
 function generateAutoColor() {
     const pos = new Float32Array(N * 3);
-
-    drawLine(pos, 0, 1000, -2, -2, 1, 1); // Wand stick
-    drawCircleOutline(pos, 1000, 1000, 1.5, 1.5, 0.8); // Star proxy
-    drawSolidCircle(pos, 2000, 1600, 2.5, -1, 0.6); // Droplet
-        drawAmbient(pos, 3600, 400);
+    drawSolidRect(pos, 0, 1000, 0, -1.5, 0.5, 3); // Brush Handle
+    drawRectOutline(pos, 1000, 600, 0, 0.3, 0.8, 0.6); // Ferrule (metal part)
+    drawSolidRect(pos, 1600, 1200, 0, 1.3, 0.7, 1.4); // Bristles
+    drawSolidCircle(pos, 2800, 800, 0, 2.3, 0.4); // Paint blob on tip
+    drawAmbient(pos, 3600, 400);
     return pos;
 }
 
